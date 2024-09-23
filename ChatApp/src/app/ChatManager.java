@@ -22,7 +22,7 @@ public class ChatManager {
 	public void draw(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
 		float y = 15;
-		g2.setColor(new Color(255, 255, 255));
+		g2.setColor(new Color(0, 0, 0));
 		for (Chat i : chats) {
 			g2.drawString(i.chat, 0, y);
 			y += 20;
