@@ -25,7 +25,7 @@ public class ChatPanel extends JPanel implements KeyListener {
 	@Override
 	public void paintComponent(Graphics g) {
 		g.clearRect(0, 0, getWidth(), getHeight());
-		g.setColor(new Color(0, 0, 0));
+		g.setColor(new Color(255, 255, 255));
 		g.fillRect(0, 0, getWidth(), getHeight());
 		cm.draw(g);
 		Graphics2D g2 = (Graphics2D)g;

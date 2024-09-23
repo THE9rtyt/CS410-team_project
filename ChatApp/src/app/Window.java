@@ -2,6 +2,8 @@ package app;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -44,6 +46,31 @@ public class Window extends JFrame {
 		contentPane.setFocusable(true);
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		this.addComponentListener(new ComponentListener() {
+
+			@Override
+			public void componentResized(ComponentEvent e) {
+				contentPane.setBounds(0, 0, getWidth(), getHeight());
+			}
+
+			@Override
+			public void componentMoved(ComponentEvent e) {
+				
+			}
+
+			@Override
+			public void componentShown(ComponentEvent e) {
+				
+			}
+
+			@Override
+			public void componentHidden(ComponentEvent e) {
+				
+			}
+
+			
+			
+		});;
 		
 	}
 
