@@ -1,0 +1,100 @@
+package network;
+
+import java.io.*;
+import java.net.Socket;
+import java.util.*;
+
+import app.Chat;
+
+//a standalone class that connects to a ChatApp socket
+public class ChatClient extends Thread {
+
+    private static final String LOGPREFIX = "CLIENT: ";
+
+    private Socket socket;
+    private int id;
+    private String username;
+    private int port;
+    private String host;
+
+    private DataInputStream inStream;
+    private DataOutputStream outStream;
+
+    private List<Chat> inMessages;
+
+    public ChatClient(int p, String h, String u) {
+        port = p;
+        host = h;
+        username = u;
+
+        inMessages = new ArrayList<>();
+
+        try {
+            startClient();
+        } catch (IOException ioe) {
+            System.out.println(LOGPREFIX + "ERROR: " + ioe);
+        }
+    }
+
+    private void startClient() throws IOException {
+        //create, open and connect socket
+        socket = new Socket(host, port);
+
+        inStream = new DataInputStream(socket.getInputStream());
+        outStream = new DataOutputStream(socket.getOutputStream());
+
+        outStream.flush();
+
+        outStream.writeUTF(username);
+        id = inStream.readInt();
+
+        System.out.println(LOGPREFIX + "started and connected to " + socket.getInetAddress().getHostAddress() + " as: " + username + " id: " + id);
+    }
+
+    @Override
+    public void run() {
+        try {
+            while (true) {
+                byte type = inStream.readByte();
+                System.out.println(LOGPREFIX + "type: " + type);
+                switch (type) {
+                    case 0x01: //message
+                        String content = inStream.readUTF();
+                        String uname = inStream.readUTF();
+                        long ts = inStream.readLong();
+                        String hash = inStream.readUTF();
+
+                        System.out.println(LOGPREFIX + "new message recieved: " + content);
+                        inMessages.add(new Chat(content, uname, ts, hash));
+
+                        outStream.writeByte(0x00);
+                    case 0x0f: //ping
+                        outStream.writeByte(0x0f);
+                        break;
+                    default:
+                        throw new AssertionError(LOGPREFIX + "Unknown message type recieved: " + type);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println(LOGPREFIX + "ERROR: " + e);
+        }
+    }
+
+    public void sendMessage(Chat message) throws IOException {
+        outStream.writeByte(0x01); //sending message
+        outStream.writeUTF(message.content);
+        outStream.writeUTF(username);
+        outStream.writeLong(message.getTimeStamp());
+        outStream.writeUTF(message.getHash());
+
+        if(inStream.readByte() != 0) {
+            throw new IOException(LOGPREFIX + "Bad Response");
+        }
+    }
+
+    public ArrayList<Chat> getQueuedMessages() {
+        var temp = new ArrayList<Chat>(inMessages);
+        inMessages = new ArrayList<>();
+        return temp;
+    }
+}
