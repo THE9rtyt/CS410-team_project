@@ -10,9 +10,22 @@ import java.awt.event.KeyListener;
  public class Dashboard extends JPanel{
     public String userName;
     public String userType;
-
+    
     public Dashboard() {
-        JPanel dashboard = new JPanel();
+    	
+    	JButton btnMod = new JButton("Moderator");
+    	btnMod.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+    		
+    	});
+    	add(btnMod);
+    	
+    	JButton btnUser = new JButton("User");
+    	add(btnUser);
         
     }
 

@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.util.*;
 
 import app.Chat;
+import app.ChatManager;
 
 //a standalone class that connects to a ChatApp socket
 public class ChatClient extends Thread {
@@ -21,6 +22,7 @@ public class ChatClient extends Thread {
     private DataOutputStream outStream;
 
     private List<Chat> inMessages;
+    private ChatManager cm;
 
     public ChatClient(int p, String h, String u) {
         port = p;
@@ -47,7 +49,7 @@ public class ChatClient extends Thread {
 
         outStream.writeUTF(username);
         id = inStream.readInt();
-
+        
         System.out.println(LOGPREFIX + "started and connected to " + socket.getInetAddress().getHostAddress() + " as: " + username + " id: " + id);
     }
 
@@ -65,7 +67,9 @@ public class ChatClient extends Thread {
                         String hash = inStream.readUTF();
 
                         System.out.println(LOGPREFIX + "new message recieved: " + content);
-                        inMessages.add(new Chat(content, uname, ts, hash));
+                        
+                        cm.addChat(new Chat(content, uname, ts, hash));
+                        // inMessages.add(new Chat(content, uname, ts, hash));
 
                         outStream.writeByte(0x00);
                     case 0x0f: //ping
@@ -79,14 +83,19 @@ public class ChatClient extends Thread {
             System.out.println(LOGPREFIX + "ERROR: " + e);
         }
     }
-
+    
+    public void sendMessage (String message) throws IOException {
+    	Chat c = new Chat(message, username);
+    	sendMessage(c);
+    }
+    
     public void sendMessage(Chat message) throws IOException {
         outStream.writeByte(0x01); //sending message
         outStream.writeUTF(message.content);
         outStream.writeUTF(username);
         outStream.writeLong(message.getTimeStamp());
         outStream.writeUTF(message.getHash());
-
+        
         if(inStream.readByte() != 0) {
             throw new IOException(LOGPREFIX + "Bad Response");
         }

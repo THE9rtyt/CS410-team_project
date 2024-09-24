@@ -3,12 +3,14 @@ package ui;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import app.ChatManager;
 import app.User;
+import network.ChatClient;
 
 import java.awt.BorderLayout;
 import javax.swing.JTextField;
@@ -22,11 +24,13 @@ public class ChatPanel extends JPanel {
 	private JTextPane chatBox;
 	private User u;
 	private String last_str;
+	private ChatClient cc;
 	/**
 	 * Create the panel.
 	 */
-	public ChatPanel(ChatManager cm) {
+	public ChatPanel(ChatManager cm, ChatClient cc) {
 		this.cm = cm;
+		this.cc = cc;
 		setLayout(new BorderLayout(0, 0));
 		
 		messageBox = new JTextField();
@@ -42,7 +46,13 @@ public class ChatPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				cm.addChat(messageBox.getText());
+				// cm.addChat(messageBox.getText());
+				try {
+					cc.sendMessage(messageBox.getText());
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				messageBox.setText("");
 				revalidate();
 				repaint();

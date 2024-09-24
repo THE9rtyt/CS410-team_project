@@ -9,6 +9,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import network.ChatClient;
+import network.ChatServer;
 import ui.ChatPanel;
 
 public class ChatApp extends JFrame {
@@ -17,7 +19,8 @@ public class ChatApp extends JFrame {
 	private ChatPanel contentPane;
 	private ChatManager cm;
 	private Dashboard db;
-
+	private ChatClient cc;
+	private ChatServer cs;
 	/**
 	 * Launch the application.
 	 */
@@ -40,9 +43,17 @@ public class ChatApp extends JFrame {
 	public ChatApp() {
 		cm = new ChatManager();
 		db = new Dashboard();
+		
+		cs = new ChatServer(9999);
+		System.out.println(cs.getServerIP());
+		cs.start();
+		cc = new ChatClient(9999, cs.getServerIP(), "kellen");
+		cc.start();
+		cs.registerId(0);
+		System.out.println("client done");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
-		contentPane = new ChatPanel(cm);
+		contentPane = new ChatPanel(cm, cc);
 		add(db, BorderLayout.NORTH);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setFocusable(true);

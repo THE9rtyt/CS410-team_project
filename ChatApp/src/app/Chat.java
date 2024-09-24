@@ -17,10 +17,10 @@ public class Chat {
 	}
 
 	//create a new Chat with pre-defined timestamp and hash
-	public Chat (String c, String a, int t, String h) {
+	public Chat (String c, String a, long ts, String h) {
 		content = c;
 		author = a;
-		timeStamp = t;
+		timeStamp = ts;
 		hash = h;
 	}
 

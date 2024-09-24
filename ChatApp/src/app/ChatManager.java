@@ -8,20 +8,19 @@ public class ChatManager {
 	
 	public ChatManager() {
 		chats = new ArrayList<>();
-		addChat("Hello world!");
 		queue = new ArrayList<>();
 	}
 	
 	
-	public void addChat (String c) {
-		chats.add(new Chat(c, "Kellen"));
+	public void addChat (Chat chat) {
+		chats.add(chat);
 	}
 	
 	@Override
 	public String toString() {
 		String str = "";
 		for (Chat i : chats) {
-			str = str + i.content + "\n"; 
+			str = str + i.author + ": " + i.content + "\n"; 
 		}
 		return str;
 	}
