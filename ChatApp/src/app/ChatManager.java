@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class ChatManager {
 	private ArrayList<Chat> chats;
-	
+	private ArrayList<Chat> queue;
 	
 	public ChatManager() {
 		chats = new ArrayList<>();
@@ -27,5 +27,26 @@ public class ChatManager {
 			g2.drawString(i.chat, 0, y);
 			y += 20;
 		}
+	}
+	
+	@Override
+	public String toString() {
+		String str = "";
+		for (Chat i : chats) {
+			str = str + i.chat + "\n"; 
+		}
+		return str;
+	}
+	
+	public void setQueue (ArrayList<Chat> queue) {
+		this.queue = queue;
+	}
+	
+	public Chat getQueue () {
+		return null;
+	}
+	
+	public Chat returnApproved () {
+		return null;
 	}
 }

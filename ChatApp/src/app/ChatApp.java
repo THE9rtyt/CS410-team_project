@@ -11,7 +11,7 @@ import javax.swing.border.EmptyBorder;
 
 import ui.ChatPanel;
 
-public class Window extends JFrame {
+public class ChatApp extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private ChatPanel contentPane;
@@ -24,7 +24,7 @@ public class Window extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Window frame = new Window();
+					ChatApp frame = new ChatApp();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -36,41 +36,14 @@ public class Window extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Window() {
+	public ChatApp() {
 		cm = new ChatManager();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new ChatPanel(cm);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.addKeyListener(contentPane);
 		contentPane.setFocusable(true);
 		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		this.addComponentListener(new ComponentListener() {
-
-			@Override
-			public void componentResized(ComponentEvent e) {
-				contentPane.setBounds(0, 0, getWidth(), getHeight());
-			}
-
-			@Override
-			public void componentMoved(ComponentEvent e) {
-				
-			}
-
-			@Override
-			public void componentShown(ComponentEvent e) {
-				
-			}
-
-			@Override
-			public void componentHidden(ComponentEvent e) {
-				
-			}
-
-			
-			
-		});;
 		
 	}
 

@@ -3,63 +3,54 @@ package ui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.JPanel;
 
 import app.ChatManager;
+import java.awt.BorderLayout;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
 
-public class ChatPanel extends JPanel implements KeyListener {
+public class ChatPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private ChatManager cm;
-	private String str = "";
+	private JTextField messageBox;
+	private JTextPane chatBox;
 	/**
 	 * Create the panel.
 	 */
 	public ChatPanel(ChatManager cm) {
 		this.cm = cm;
+		setLayout(new BorderLayout(0, 0));
+		
+		messageBox = new JTextField();
+		add(messageBox, BorderLayout.SOUTH);
+		messageBox.setColumns(10);
+		
+		JTextPane textPane = new JTextPane();
+		textPane.setText(cm.toString());
+		add(textPane, BorderLayout.CENTER);
+		
+		messageBox.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				cm.addChat(messageBox.getText());
+				messageBox.setText("");
+				textPane.setText(cm.toString());
+			}
+			
+		});
 	}
 	
-	@Override
-	public void paintComponent(Graphics g) {
-		g.clearRect(0, 0, getWidth(), getHeight());
-		g.setColor(new Color(255, 255, 255));
-		g.fillRect(0, 0, getWidth(), getHeight());
-		cm.draw(g);
-		Graphics2D g2 = (Graphics2D)g;
-		g2.drawString(str, 0, getHeight() - 20);
-		revalidate();
-		repaint();
+	public void updateText () {
+		chatBox.setText(cm.toString());
 	}
 
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() != KeyEvent.VK_ENTER) {
-			char c = e.getKeyChar();
-			if (c != KeyEvent.CHAR_UNDEFINED) {
-				str = str + e.getKeyChar();
-			}
-		} else {
-			if (str != "") {
-				cm.addChat(str);
-				str = "";
-			}
-		}
-		
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }
