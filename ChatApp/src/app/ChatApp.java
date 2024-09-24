@@ -16,6 +16,7 @@ public class ChatApp extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private ChatPanel contentPane;
 	private ChatManager cm;
+	private Dashboard db;
 
 	/**
 	 * Launch the application.
@@ -38,9 +39,11 @@ public class ChatApp extends JFrame {
 	 */
 	public ChatApp() {
 		cm = new ChatManager();
+		db = new Dashboard();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new ChatPanel(cm);
+		add(db, BorderLayout.NORTH);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setFocusable(true);
 		setContentPane(contentPane);
