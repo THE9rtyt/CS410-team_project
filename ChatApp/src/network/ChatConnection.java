@@ -1,10 +1,9 @@
 package network;
 
-import java.io.*;
-import java.util.*;
-import java.net.Socket;
-
 import app.Chat;
+import java.io.*;
+import java.net.Socket;
+import java.util.*;
 
 //a simple connection class for connection mangament from the server side
 public class ChatConnection extends Thread {
@@ -53,8 +52,10 @@ public class ChatConnection extends Thread {
         try {
             while (true) {
                 byte type = inStream.readByte();
+                System.out.println(LOGPREFIX + "type: " + type);
                 switch (type) {
-                    case 0x01: //message
+                    case 0x01 -> {
+                        //message
                         String content = inStream.readUTF();
                         String uname = inStream.readUTF();
                         long ts = inStream.readLong();
@@ -63,15 +64,14 @@ public class ChatConnection extends Thread {
                         if (registered) {
                             inMessages.add(new Chat(content, uname, ts, hash));
                         }
-
-                        outStream.writeByte(0x00);
-                    case 0x0f: //ping
-                        outStream.writeByte(0x0f);
-                        break;
-                    default:
-                        throw new AssertionError(LOGPREFIX + "Unknown message type recieved: " + type);
+                    }
+                    case 0x0f -> //ping
+                        outStream.writeByte(0x0d);
+                    default -> {
+                    }
                 }
-
+                throw new AssertionError(LOGPREFIX + "Unknown message type recieved: " + type);
+                
             }
         } catch (IOException e) {
             System.out.println(LOGPREFIX + "ERROR: " + e);
@@ -88,14 +88,10 @@ public class ChatConnection extends Thread {
         outStream.writeUTF(username);
         outStream.writeLong(message.getTimeStamp());
         outStream.writeUTF(message.getHash());
-
-        if(inStream.readByte() != 0) {
-            throw new IOException(LOGPREFIX + "Bad Response");
-        }
     }
 
     public ArrayList<Chat> getQueuedMessages() {
-        var temp = new ArrayList<Chat>(inMessages);
+        var temp = new ArrayList<>(inMessages);
         inMessages = new ArrayList<>();
         return temp;
     }
