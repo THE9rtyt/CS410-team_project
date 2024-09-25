@@ -1,68 +1,94 @@
 package app;
 
+
 import javax.swing.*;
+
+import ui.ChatPanel;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyListener;
 
-// Abstract base class for a general Dashboard
- public class Dashboard extends JPanel{
-    public String userName;
-    public String userType;
-    
-    public Dashboard() {
-    	
-    	JButton btnMod = new JButton("Moderator");
-    	btnMod.addActionListener(new ActionListener() {
+public class Dashboard extends JPanel {
+    private String userType;
+    private ChatManager CM;
+    private ChatPanel chatPanel;
+    private JPanel askUser;          // Panel to ask user type
+    private JPanel dashboardPanel;   // Panel for dashboard UI
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-    		
-    	});
-    	add(btnMod);
-    	
-    	JButton btnUser = new JButton("User");
-    	add(btnUser);
+    public Dashboard(ChatManager cm, ChatPanel ChatPanel) {
+        this.CM = cm;
+        this.chatPanel = ChatPanel;
+        setLayout(new BorderLayout(0, 0));
         
-    }
+        // Initialize "Ask User" panel with buttons
+        askUser = new JPanel();
+        JButton btnMod = new JButton("Moderator");
+        JButton btnRegister = new JButton("Register");
+        askUser.add(btnMod);
+        askUser.add(btnRegister);
+        
+        // Add askUser panel at the top
+        add(askUser, BorderLayout.NORTH);
 
-    public void ModeratorDashboard() {
-    	//initialize ui for dashboard
-        // Approve/Reject Buttons
+        // Create dashboardPanel but keep it hidden initially
+        dashboardPanel = new JPanel(new BorderLayout(0, 0));
+        dashboardPanel.setVisible(false);
+
         JPanel buttonPanel = new JPanel();
         JButton approveButton = new JButton("Approve");
         JButton rejectButton = new JButton("Reject");
         buttonPanel.add(approveButton);
         buttonPanel.add(rejectButton);
-        add(buttonPanel, BorderLayout.NORTH);
-     // Log area to display actions taken by the moderator
-        
-        JTextArea messageQueueArea = new JTextArea(5, 30);
-        messageQueueArea.setEditable(false);
-        add(new JScrollPane(messageQueueArea), BorderLayout.EAST);
-//        messageQueueArea.append(ChatManager.chats)
+        dashboardPanel.add(buttonPanel, BorderLayout.WEST); // Add buttons to dashboard panel
 
-        // Action listeners for buttons
+        JTextArea messageQueueArea = new JTextArea(5, 20);
+        messageQueueArea.setEditable(false);
+        dashboardPanel.add(new JScrollPane(messageQueueArea), BorderLayout.EAST);
+
+        // Add dashboard panel but keep it hidden
+        add(dashboardPanel, BorderLayout.CENTER);
+
+      
+        messageQueueArea.setText(cm.queueToString());
+
+        // Action listener for "Approve" and "Reject" buttons
         approveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-//            	ChatPanel.append(messageQueueArea.getText() + "\n"); //put queued message onto chat
+                Chat nextMessage = cm.popQueue();
+                if (nextMessage != null) {
+                    cm.addChat(nextMessage);
+                    messageQueueArea.setText(cm.queueToString());
+                    chatPanel.updateText();
+                }
             }
         });
 
         rejectButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-//          	ChatManager.chats.remove(messageQueueArea.getText()); //remove queued message
-            	// remove from actual list too
+                cm.popQueue();  
+                messageQueueArea.setText(cm.queueToString());  // Update queued messages textarea
             }
         });
 
-        setVisible(true);
-    }
+       
+        btnMod.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                userType = "Moderator";
+                askUser.setVisible(false);      
+                dashboardPanel.setVisible(true); // Show the dashboard
+            }
+        });
 
-    public void UserDashboard() {
-
+        
+        btnRegister.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                userType = "User";
+                askUser.setVisible(false);     
+                dashboardPanel.setVisible(false); // Keep the dashboard hidden
+            }
+        });
     }
 }

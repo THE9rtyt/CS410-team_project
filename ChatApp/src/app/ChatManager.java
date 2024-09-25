@@ -12,6 +12,13 @@ public class ChatManager {
 	public ChatManager() {
 		chats = new ArrayList<>();
 		queue = new ArrayList<>();
+		
+		//test
+//		queue.add(new Chat("Hello everyone! How are you?", "Alice"));
+//		queue.add(new Chat("This is a test message.", "Bob"));
+//		queue.add(new Chat("Can anyone help me with my issue?", "Charlie"));
+//		queue.add(new Chat("Looking forward to our meeting tomorrow.", "David"));
+//		queue.add(new Chat("Does anyone know the schedule for today?", "Eve"));
 	}
 	
 	
@@ -24,6 +31,13 @@ public class ChatManager {
 	public String toString() {
 		String str = "";
 		for (Chat i : chats) {
+			str = str + i.author + ": " + i.content + "\n"; 
+		}
+		return str;
+	}
+	public String queueToString() {
+		String str = "";
+		for (Chat i : queue) {
 			str = str + i.author + ": " + i.content + "\n"; 
 		}
 		return str;
@@ -46,4 +60,5 @@ public class ChatManager {
 	public void setPanel (ChatPanel cp) {
 		this.cp = cp;
 	}
+
 }
