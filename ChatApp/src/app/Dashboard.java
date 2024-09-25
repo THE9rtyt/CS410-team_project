@@ -23,8 +23,10 @@ public class Dashboard extends JPanel {
         
         // Initialize "Ask User" panel with buttons
         askUser = new JPanel();
+        JLabel ask = new JLabel("Choose User type: ");
         JButton btnMod = new JButton("Moderator");
-        JButton btnRegister = new JButton("Register");
+        JButton btnRegister = new JButton("Registered");
+        askUser.add(ask);
         askUser.add(btnMod);
         askUser.add(btnRegister);
         
@@ -34,7 +36,7 @@ public class Dashboard extends JPanel {
         // Create dashboardPanel but keep it hidden initially
         dashboardPanel = new JPanel(new BorderLayout(0, 0));
         dashboardPanel.setVisible(false);
-
+        
         JPanel buttonPanel = new JPanel();
         JButton approveButton = new JButton("Approve");
         JButton rejectButton = new JButton("Reject");
