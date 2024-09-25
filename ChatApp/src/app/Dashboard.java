@@ -3,21 +3,29 @@ package app;
 
 import javax.swing.*;
 
+import network.ChatClient;
+import network.ChatServer;
 import ui.ChatPanel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class Dashboard extends JPanel {
     private String userType;
-    private ChatManager CM;
+    private ChatManager cm;
     private ChatPanel chatPanel;
     private JPanel askUser;          // Panel to ask user type
     private JPanel dashboardPanel;   // Panel for dashboard UI
+    private ChatServer cs;
+    private ChatClient cc;
+    public JTextArea messageQueueArea;
 
     public Dashboard(ChatManager cm, ChatPanel ChatPanel) {
-        this.CM = cm;
+        this.cm = cm;
         this.chatPanel = ChatPanel;
         setLayout(new BorderLayout(0, 0));
         
@@ -44,7 +52,7 @@ public class Dashboard extends JPanel {
         buttonPanel.add(rejectButton);
         dashboardPanel.add(buttonPanel, BorderLayout.WEST); // Add buttons to dashboard panel
 
-        JTextArea messageQueueArea = new JTextArea(5, 20);
+        messageQueueArea = new JTextArea(5, 20);
         messageQueueArea.setEditable(false);
         dashboardPanel.add(new JScrollPane(messageQueueArea), BorderLayout.EAST);
 
@@ -57,17 +65,25 @@ public class Dashboard extends JPanel {
         // Action listener for "Approve" and "Reject" buttons
         approveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+            	cm.setQueue(cs.getQueuedMessages());
                 Chat nextMessage = cm.popQueue();
+                System.out.println(nextMessage.author);
                 if (nextMessage != null) {
-                    cm.addChat(nextMessage);
                     messageQueueArea.setText(cm.queueToString());
                     chatPanel.updateText();
+                    try {
+						cs.sendMessage(nextMessage);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
                 }
             }
         });
 
         rejectButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+            	cm.setQueue(cs.getQueuedMessages());
                 cm.popQueue();  
                 messageQueueArea.setText(cm.queueToString());  // Update queued messages textarea
             }
@@ -78,7 +94,13 @@ public class Dashboard extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 userType = "Moderator";
-                askUser.setVisible(false);      
+                askUser.setVisible(false);
+                cs = new ChatServer(9999);
+        		cs.start();
+        		cc = new ChatClient(9999, cs.getServerIP(), "admin");
+        		cc.setChatManager(cm);
+        		cc.start();
+        		chatPanel.setChatClient(cc);
                 dashboardPanel.setVisible(true); // Show the dashboard
             }
         });
@@ -90,7 +112,26 @@ public class Dashboard extends JPanel {
                 userType = "User";
                 askUser.setVisible(false);     
                 dashboardPanel.setVisible(false); // Keep the dashboard hidden
+                try {
+					cc = new ChatClient(9999, InetAddress.getLocalHost().getHostAddress(), "user1");
+				} catch (UnknownHostException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+        		cc.setChatManager(cm);
+        		cc.start();
+        		chatPanel.setChatClient(cc);
             }
         });
+       
+    }
+    
+    public void updateText () {
+    	if (cs != null) {
+    		cm.setQueue(cs.getQueuedMessages());
+    		messageQueueArea.setText(cm.queueToString());  // Update queued messages textarea
+    		revalidate();
+    		repaint();
+    	}
     }
 }

@@ -62,6 +62,7 @@ public class ChatClient extends Thread {
                         //message
                         String content = inStream.readUTF();
                         String uname = inStream.readUTF();
+                        System.out.println(uname);
                         long ts = inStream.readLong();
                         String hash = inStream.readUTF();
 
@@ -69,13 +70,17 @@ public class ChatClient extends Thread {
 
                         cm.addChat(new Chat(content, uname, ts, hash));
                         // inMessages.add(new Chat(content, uname, ts, hash));
+                        break;
                     }
-                    case 0x0f -> //ping
+                    case 0x0f -> { //ping
                         outStream.writeByte(0x0d);
+                        break;
+                    }
                     default -> {
+                    	throw new AssertionError(LOGPREFIX + "Unknown message type recieved: " + type);
                     }
                 }
-                throw new AssertionError(LOGPREFIX + "Unknown message type recieved: " + type);
+                
             }
         } catch (IOException e) {
             System.out.println(LOGPREFIX + "ERROR: " + e);
@@ -90,22 +95,12 @@ public class ChatClient extends Thread {
     public void sendMessage(Chat message) throws IOException {
         outStream.writeByte(0x01); //sending message
         outStream.writeUTF(message.content);
-        outStream.writeUTF(username);
+        outStream.writeUTF(message.author);
         outStream.writeLong(message.getTimeStamp());
         outStream.writeUTF(message.getHash());
     }
 
-    public ArrayList<Chat> getQueuedMessages() {
-        var temp = new ArrayList<>(inMessages);
-        inMessages = new ArrayList<>();
-        return temp;
-    }
-
     public void setChatManager(ChatManager cm) {
         this.cm = cm;
-    }
-
-    public String getUserName() {
-        return username;
     }
 }

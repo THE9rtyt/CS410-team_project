@@ -1,6 +1,8 @@
 package network;
 
 import app.Chat;
+import app.Dashboard;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -15,7 +17,8 @@ public class ChatServer extends Thread {
 
     public ArrayList<ChatConnection> clients = new ArrayList<>();
     public int clientID = 0;
-
+    
+    
     public ChatServer(int p) {
         port = p;
 
@@ -43,7 +46,7 @@ public class ChatServer extends Thread {
                 System.out.println(LOGPREFIX + "new connection at " + newSocket.getInetAddress().getHostAddress());
                 var newChat = new ChatConnection(newSocket, clientID++);
                 clients.add(newChat);
-
+                registerId(clientID - 1);
                 newChat.start();
             }
         } catch (IOException ioe) {
@@ -64,14 +67,14 @@ public class ChatServer extends Thread {
             connection.sendMessage(message);
         }
     }
-
+    
     public ArrayList<Chat> getQueuedMessages() {
         var temp = new ArrayList<Chat>();
 
         for (var connection : clients) {
             temp.addAll(connection.getQueuedMessages());
         }
-
+        
         return temp;
     }
 }

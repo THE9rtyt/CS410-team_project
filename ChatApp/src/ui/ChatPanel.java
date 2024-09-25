@@ -10,6 +10,7 @@ import javax.swing.JScrollPane;
 
 import app.Chat;
 import app.ChatManager;
+import app.Dashboard;
 import app.User;
 import network.ChatClient;
 
@@ -25,10 +26,11 @@ public class ChatPanel extends JPanel {
 	private JTextPane chatBox;
 	private String last_str;
 	private ChatClient cc;
+	
 	/**
 	 * Create the panel.
 	 */
-	public ChatPanel(ChatManager cm, ChatClient chat, String username) {
+	public ChatPanel(ChatManager cm, ChatClient chat) {
 		this.cm = cm;
 		this.cc = chat;
 		setLayout(new BorderLayout(0, 0));
@@ -74,6 +76,9 @@ public class ChatPanel extends JPanel {
 			revalidate();
 			repaint();
 		}
+	}
+	public void setChatClient (ChatClient cc) {
+		this.cc = cc;
 	}
 
 
