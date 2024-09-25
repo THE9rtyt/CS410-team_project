@@ -64,13 +64,16 @@ public class ChatConnection extends Thread {
                         if (registered) {
                             inMessages.add(new Chat(content, uname, ts, hash));
                         }
+                    	break;
                     }
-                    case 0x0f -> //ping
+                    case 0x0f -> { //ping
                         outStream.writeByte(0x0d);
+                        break;
+                    }
                     default -> {
+                    	throw new AssertionError(LOGPREFIX + "Unknown message type recieved: " + type);
                     }
                 }
-                throw new AssertionError(LOGPREFIX + "Unknown message type recieved: " + type);
                 
             }
         } catch (IOException e) {

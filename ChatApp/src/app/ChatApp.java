@@ -13,6 +13,28 @@ import network.ChatClient;
 import network.ChatServer;
 import ui.ChatPanel;
 
+
+class UpdateThread extends Thread {
+	private Dashboard db;
+	
+	public UpdateThread (Dashboard db) {
+		this.db = db;
+	}
+	
+	public void run () {
+		while (true) {
+			db.updateText();
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+}
+
+
 public class ChatApp extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -43,25 +65,21 @@ public class ChatApp extends JFrame {
 	public ChatApp() {
 		cm = new ChatManager();
 		
-		
-		cs = new ChatServer(9999);
-		System.out.println(cs.getServerIP());
-		cs.start();
-		cc = new ChatClient(9999, cs.getServerIP(), "kellen");
-		cc.start();
-		cs.registerId(0);
-		System.out.println("client done");
-		cc.setChatManager(cm);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300); 
-		contentPane = new ChatPanel(cm, cc, cc.getUserName());
+		contentPane = new ChatPanel(cm, cc);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setFocusable(true);
 		setContentPane(contentPane);
 		cm.setPanel(contentPane);
 		
 		dbpanel = new Dashboard(cm, contentPane);
-        add(dbpanel, BorderLayout.NORTH);
+        dbpanel.setFocusable(true);
+		add(dbpanel, BorderLayout.NORTH);
+        
+		UpdateThread updatet = new UpdateThread(dbpanel);
+		updatet.start();
+		
 
 		
 	}
