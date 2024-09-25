@@ -96,7 +96,7 @@ public class ChatClient extends Thread {
     public void sendMessage(Chat message) throws IOException {
         outStream.writeByte(0x01); //sending message
         outStream.writeUTF(message.content);
-        outStream.writeUTF(username);
+        outStream.writeUTF(message.author);
         outStream.writeLong(message.getTimeStamp());
         outStream.writeUTF(message.getHash());
     }
