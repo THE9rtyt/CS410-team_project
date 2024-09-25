@@ -1,10 +1,9 @@
 package network;
 
+import app.Chat;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-
-import app.Chat;
 
 //a standalone class that hosts a ChatApp server
 public class ChatServer extends Thread {
@@ -69,7 +68,7 @@ public class ChatServer extends Thread {
     public ArrayList<Chat> getQueuedMessages() {
         var temp = new ArrayList<Chat>();
 
-        for(var connection : clients) {
+        for (var connection : clients) {
             temp.addAll(connection.getQueuedMessages());
         }
 
