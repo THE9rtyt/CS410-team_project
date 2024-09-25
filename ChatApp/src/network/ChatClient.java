@@ -106,4 +106,12 @@ public class ChatClient extends Thread {
         inMessages = new ArrayList<>();
         return temp;
     }
+    
+    public void setChatManager (ChatManager cm) {
+    	this.cm = cm;
+    }
+    
+    public String getUserName () {
+    	return username;
+    }
 }

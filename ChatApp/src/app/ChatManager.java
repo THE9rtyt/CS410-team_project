@@ -2,9 +2,12 @@ package app;
 
 import java.util.ArrayList;
 
+import ui.ChatPanel;
+
 public class ChatManager {
 	private ArrayList<Chat> chats;
 	private ArrayList<Chat> queue;
+	private ChatPanel cp;
 	
 	public ChatManager() {
 		chats = new ArrayList<>();
@@ -14,6 +17,7 @@ public class ChatManager {
 	
 	public void addChat (Chat chat) {
 		chats.add(chat);
+		cp.updateText();
 	}
 	
 	@Override
@@ -37,5 +41,9 @@ public class ChatManager {
 		Chat c = queue.get(0);
 		queue.remove(0);
 		return c;
+	}
+	
+	public void setPanel (ChatPanel cp) {
+		this.cp = cp;
 	}
 }

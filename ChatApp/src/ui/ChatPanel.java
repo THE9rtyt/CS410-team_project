@@ -8,6 +8,7 @@ import java.io.IOException;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import app.Chat;
 import app.ChatManager;
 import app.User;
 import network.ChatClient;
@@ -22,15 +23,14 @@ public class ChatPanel extends JPanel {
 	private ChatManager cm;
 	private JTextField messageBox;
 	private JTextPane chatBox;
-	private User u;
 	private String last_str;
 	private ChatClient cc;
 	/**
 	 * Create the panel.
 	 */
-	public ChatPanel(ChatManager cm, ChatClient cc) {
+	public ChatPanel(ChatManager cm, ChatClient chat, String username) {
 		this.cm = cm;
-		this.cc = cc;
+		this.cc = chat;
 		setLayout(new BorderLayout(0, 0));
 		
 		messageBox = new JTextField();
@@ -46,7 +46,7 @@ public class ChatPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// cm.addChat(messageBox.getText());
+				// cm.addChat(new Chat(messageBox.getText(), username));
 				try {
 					cc.sendMessage(messageBox.getText());
 				} catch (IOException e1) {
@@ -54,8 +54,6 @@ public class ChatPanel extends JPanel {
 					e1.printStackTrace();
 				}
 				messageBox.setText("");
-				revalidate();
-				repaint();
 			}
 			
 		});

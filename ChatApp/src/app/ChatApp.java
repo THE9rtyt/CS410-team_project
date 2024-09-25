@@ -51,13 +51,15 @@ public class ChatApp extends JFrame {
 		cc.start();
 		cs.registerId(0);
 		System.out.println("client done");
+		cc.setChatManager(cm);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
-		contentPane = new ChatPanel(cm, cc);
+		contentPane = new ChatPanel(cm, cc, cc.getUserName());
 		add(db, BorderLayout.NORTH);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setFocusable(true);
 		setContentPane(contentPane);
+		cm.setPanel(contentPane);
 		
 	}
 
