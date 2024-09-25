@@ -7,7 +7,6 @@ import java.util.*;
 
 //a simple connection class for connection mangament from the server side
 public class ChatConnection extends Thread {
-
     private static final String LOGPREFIX = "CHATCON: ";
 
     private Socket socket;

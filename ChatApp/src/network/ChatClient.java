@@ -10,7 +10,6 @@ import java.util.*;
 public class ChatClient extends Thread {
 
     private static final String LOGPREFIX = "CLIENT: ";
-
     private Socket socket;
     private int id;
     private String username;

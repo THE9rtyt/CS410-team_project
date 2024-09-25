@@ -1,7 +1,6 @@
 package app;
 
 public class Chat {
-
 	public String content;
 	public String author;
 
