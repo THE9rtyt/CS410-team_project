@@ -31,7 +31,7 @@ public class ChatConnection extends Thread {
             System.out.println(LOGPREFIX + "ERROR: " + ioe);
         }
     }
-
+    
     private void startConnection() throws IOException {
         inStream = new DataInputStream(socket.getInputStream());
         outStream = new DataOutputStream(socket.getOutputStream());

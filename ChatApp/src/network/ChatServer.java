@@ -74,7 +74,7 @@ public class ChatServer extends Thread {
         for (var connection : clients) {
             temp.addAll(connection.getQueuedMessages());
         }
-        
+       
         return temp;
     }
 }

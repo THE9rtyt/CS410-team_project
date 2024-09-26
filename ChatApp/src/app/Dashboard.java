@@ -2,17 +2,14 @@ package app;
 
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import java.net.*;
 
-import network.ChatClient;
-import network.ChatServer;
+import network.*;
 import ui.ChatPanel;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 public class Dashboard extends JPanel {
     private String userType;
@@ -20,10 +17,13 @@ public class Dashboard extends JPanel {
     private ChatPanel chatPanel;
     private JPanel askUser;          // Panel to ask user type
     private JPanel dashboardPanel;   // Panel for dashboard UI
+    private JPanel askConnect;
+    private JTextField IpTextField;
+    private JTextField usernameTextField;
     private ChatServer cs;
     private ChatClient cc;
     public JTextArea messageQueueArea;
-
+    
     public Dashboard(ChatManager cm, ChatPanel ChatPanel) {
         this.cm = cm;
         this.chatPanel = ChatPanel;
@@ -104,26 +104,63 @@ public class Dashboard extends JPanel {
                 dashboardPanel.setVisible(true); // Show the dashboard
             }
         });
-
         
         btnRegister.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                userType = "User";
+            	initializeAskConnect();
                 askUser.setVisible(false);     
+                askConnect.setVisible(true);
                 dashboardPanel.setVisible(false); // Keep the dashboard hidden
-                try {
-					cc = new ChatClient(9999, InetAddress.getLocalHost().getHostAddress(), "user1");
-				} catch (UnknownHostException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-        		cc.setChatManager(cm);
-        		cc.start();
-        		chatPanel.setChatClient(cc);
+               
             }
         });
+        
+  
+      
+        
+        
        
+    }
+    
+    public void initializeAskConnect() {
+    	JPanel askConnectPanel = new JPanel();
+        JLabel enterIPLabel = new JLabel("Enter IP: ");
+        IpTextField = new JTextField();
+        IpTextField.setColumns(10);
+        
+        JLabel askUsernameLabel = new JLabel("Enter Username: ");
+        usernameTextField = new JTextField();
+        usernameTextField.setColumns(10);
+        
+        
+        KeyAdapter textAreaEnter = new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+            	if(e.getKeyCode() == KeyEvent.VK_ENTER && !IpTextField.getText().equals("") && !usernameTextField.getText().equals("")) {
+            
+    				cc = new ChatClient(9999, IpTextField.getText(), usernameTextField.getText());
+    		
+            		cc.setChatManager(cm);
+            		cc.start();
+            		chatPanel.setChatClient(cc);
+            		askConnect.setVisible(false);
+            	}
+ 
+            }
+        };
+        
+        IpTextField.addKeyListener(textAreaEnter);
+        usernameTextField.addKeyListener(textAreaEnter);
+        
+        askConnectPanel.add(enterIPLabel);
+        askConnectPanel.add(IpTextField);
+        askConnectPanel.add(askUsernameLabel);
+        askConnectPanel.add(usernameTextField);
+        
+        this.askConnect = askConnectPanel;
+        add(askConnect, BorderLayout.NORTH);
+        
     }
     
     public void updateText () {
