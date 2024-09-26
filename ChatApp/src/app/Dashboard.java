@@ -51,6 +51,7 @@ public class Dashboard extends JPanel {
         buttonPanel.add(approveButton);
         buttonPanel.add(rejectButton);
         dashboardPanel.add(buttonPanel, BorderLayout.WEST); // Add buttons to dashboard panel
+        
 
         messageQueueArea = new JTextArea(5, 20);
         messageQueueArea.setEditable(false);
@@ -97,6 +98,9 @@ public class Dashboard extends JPanel {
                 askUser.setVisible(false);
                 cs = new ChatServer(9999);
         		cs.start();
+        		JLabel IPLabel = new JLabel("Server Ip: " + cs.getServerIP());
+        		dashboardPanel.add(IPLabel, BorderLayout.SOUTH);
+        		
         		cc = new ChatClient(9999, cs.getServerIP(), "admin");
         		cc.setChatManager(cm);
         		cc.start();
