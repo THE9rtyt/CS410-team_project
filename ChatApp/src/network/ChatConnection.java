@@ -13,6 +13,7 @@ public class ChatConnection extends Thread {
     private int id;
     private String username;
     private boolean registered = false;
+    private boolean connected;
 
     private DataInputStream inStream;
     private DataOutputStream outStream;
@@ -43,13 +44,14 @@ public class ChatConnection extends Thread {
         // NotifyNewUser(username, id);
         outStream.writeInt(id);
 
+        connected = true;
         System.out.println(LOGPREFIX + "started new connection from: " + socket.getInetAddress().getHostAddress() + " as: " + username + " id: " + id);
     }
 
     @Override
     public void run() {
         try {
-            while (true) {
+            while (connected) {
                 byte type = inStream.readByte();
                 System.out.println(LOGPREFIX + "type: " + type);
                 switch (type) {
@@ -85,11 +87,13 @@ public class ChatConnection extends Thread {
     }
 
     public void sendMessage(Chat message) throws IOException {
-        outStream.writeByte(0x01); //sending message
-        outStream.writeUTF(message.content);
-        outStream.writeUTF(message.author);
-        outStream.writeLong(message.getTimeStamp());
-        outStream.writeUTF(message.getHash());
+        if(connected) {
+            outStream.writeByte(0x01); //sending message
+            outStream.writeUTF(message.content);
+            outStream.writeUTF(message.author);
+            outStream.writeLong(message.getTimeStamp());
+            outStream.writeUTF(message.getHash());
+        }
     }
 
     public ArrayList<Chat> getQueuedMessages() {
