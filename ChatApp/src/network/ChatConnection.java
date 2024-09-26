@@ -78,6 +78,7 @@ public class ChatConnection extends Thread {
                 
             }
         } catch (IOException e) {
+            connected = false;
             System.out.println(LOGPREFIX + "ERROR: " + e);
         }
     }
