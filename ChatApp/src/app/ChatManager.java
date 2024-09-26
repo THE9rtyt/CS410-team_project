@@ -21,7 +21,6 @@ public class ChatManager {
 //		queue.add(new Chat("Does anyone know the schedule for today?", "Eve"));
 	}
 	
-	
 	public void addChat (Chat chat) {
 		chats.add(chat);
 		cp.updateText();
@@ -31,14 +30,14 @@ public class ChatManager {
 	public String toString() {
 		String str = "";
 		for (Chat i : chats) {
-			str = str + i.author + ": " + i.content + "\n"; 
+			str = str + i.author + ": " + i.content + " [" + i.timestampToDate() + "]" + "\n"; 
 		}
 		return str;
 	}
 	public String queueToString() {
 		String str = "";
 		for (Chat i : queue) {
-			str = str + i.author + ": " + i.content + "\n"; 
+			str = str + i.author + ": " + i.content + " [" + i.getTimeStamp() + "]" + "\n"; 
 		}
 		return str;
 	}

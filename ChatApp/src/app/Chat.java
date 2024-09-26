@@ -1,4 +1,6 @@
 package app;
+import java.util.Date;
+
 
 public class Chat {
 	public String content;
@@ -40,5 +42,12 @@ public class Chat {
 	@Override
 	public String toString() {
 		return "Chat: content: " + content + " author: " + author + " hash: " + hash;
+	}
+	
+	public String timestampToDate () {
+		Date dt = new Date(this.timeStamp);
+		String str = dt.getHours() + ":" + Integer.toString(dt.getMinutes());
+		str = str + ", " + dt.getDay();
+		return str;
 	}
 }
