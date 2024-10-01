@@ -80,6 +80,6 @@ public class ChatPanel extends JPanel {
 	public void setChatClient (ChatClient cc) {
 		this.cc = cc;
 	}
-
+	
 
 }
