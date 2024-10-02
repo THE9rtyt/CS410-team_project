@@ -6,6 +6,7 @@ import app.Dashboard;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.Map.Entry;
 
 //a standalone class that hosts a ChatApp server
 public class ChatServer extends Thread {
@@ -15,12 +16,15 @@ public class ChatServer extends Thread {
     private ServerSocket server;
     private int port = 9999;
 
-    public ArrayList<ChatConnection> clients = new ArrayList<>();
+    public HashMap<String, ChatConnection> clients = new HashMap<String, ChatConnection>();
     public int clientID = 0;
     
+    public Dashboard db;
     
-    public ChatServer(int p) {
+    
+    public ChatServer(int p, Dashboard d) {
         port = p;
+        db = d;
 
         try {
             startServer();
@@ -44,10 +48,14 @@ public class ChatServer extends Thread {
                 Socket newSocket = server.accept();
 
                 System.out.println(LOGPREFIX + "new connection at " + newSocket.getInetAddress().getHostAddress());
-                var newChat = new ChatConnection(newSocket, clientID++);
-                clients.add(newChat);
-                registerId(clientID - 1);
+                
+                var newChat = new ChatConnection(newSocket, clientID++, this);
                 newChat.start();
+                
+                if(newChat.getConnectionIP().equals(this.getServerIP())) {
+                	newChat.register();
+                }
+                
             }
         } catch (IOException ioe) {
             System.out.println(LOGPREFIX + "ERROR: " + ioe);
@@ -58,23 +66,32 @@ public class ChatServer extends Thread {
         return server.getInetAddress().getHostAddress();
     }
 
-    public void registerId(int id) {
-        clients.get(id).register();
+    public void register(String uname) {
+        clients.get(uname).register();
     }
 
     public void sendMessage(Chat message) throws IOException {
-        for (var connection : clients) {
-            connection.sendMessage(message);
+        for (Entry<String, ChatConnection> connection : clients.entrySet()) {
+        	
+            connection.getValue().sendMessage(message);
         }
     }
     
     public ArrayList<Chat> getQueuedMessages() {
         var temp = new ArrayList<Chat>();
-
-        for (var connection : clients) {
-            temp.addAll(connection.getQueuedMessages());
+        
+        for (Entry<String, ChatConnection> connection : clients.entrySet()) {
+        	
+            temp.addAll(connection.getValue().getQueuedMessages());
         }
        
         return temp;
     }
+
+	public void notifyNewUser(String username, ChatConnection chatConnection) {
+		clients.put(username, chatConnection);
+		if(!chatConnection.getConnectionIP().equals(this.getServerIP())) {
+			db.notifyNewConnection(username);			
+		}
+	}
 }

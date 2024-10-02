@@ -10,6 +10,7 @@ public class ChatConnection extends Thread {
     private static final String LOGPREFIX = "CHATCON: ";
 
     private Socket socket;
+    private ChatServer cs;
     private int id;
     private String username;
     private boolean registered = false;
@@ -20,9 +21,10 @@ public class ChatConnection extends Thread {
 
     private List<Chat> inMessages;
 
-    public ChatConnection(Socket s, int i) {
+    public ChatConnection(Socket s, int i, ChatServer c) {
         socket = s;
         id = i;
+        cs = c;
 
         inMessages = new ArrayList<>();
 
@@ -41,7 +43,7 @@ public class ChatConnection extends Thread {
 
         username = inStream.readUTF().trim();
 
-        // NotifyNewUser(username, id);
+        cs.notifyNewUser(username, this);
         outStream.writeInt(id);
 
         connected = true;
@@ -101,5 +103,9 @@ public class ChatConnection extends Thread {
         var temp = new ArrayList<>(inMessages);
         inMessages = new ArrayList<>();
         return temp;
+    }
+    
+    public String getConnectionIP() {
+    	return socket.getInetAddress().getHostAddress();
     }
 }
