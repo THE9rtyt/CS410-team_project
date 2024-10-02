@@ -37,7 +37,7 @@ public class ChatManager {
 	public String queueToString() {
 		String str = "";
 		for (Chat i : queue) {
-			str = str + i.author + ": " + i.content + " [" + i.getTimeStamp() + "]" + "\n"; 
+			str = str + i.author + ": " + i.content + " [" + i.timestampToDate() + "]" + "\n"; 
 		}
 		return str;
 	}
@@ -51,9 +51,12 @@ public class ChatManager {
 	}
 	
 	public Chat popQueue () {
-		Chat c = queue.get(0);
-		queue.remove(0);
-		return c;
+		if (queue.size() > 0) {
+			Chat c = queue.get(0);
+			queue.remove(0);
+			return c;
+		}
+		return null;
 	}
 	
 	public void setPanel (ChatPanel cp) {

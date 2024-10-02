@@ -1,4 +1,10 @@
 package app;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Date;
 
 
@@ -45,9 +51,9 @@ public class Chat {
 	}
 	
 	public String timestampToDate () {
-		Date dt = new Date(this.timeStamp);
-		String str = dt.getHours() + ":" + Integer.toString(dt.getMinutes());
-		str = str + ", " + dt.getDay();
+		LocalDateTime ldt = Instant.ofEpochMilli(timeStamp).atZone(ZoneId.systemDefault()).toLocalDateTime();
+		DateTimeFormatter dtf = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
+		String str = ldt.format(dtf);
 		return str;
 	}
 }

@@ -68,8 +68,8 @@ public class Dashboard extends JPanel {
             public void actionPerformed(ActionEvent e) {
             	cm.setQueue(cs.getQueuedMessages());
                 Chat nextMessage = cm.popQueue();
-                System.out.println(nextMessage.author);
                 if (nextMessage != null) {
+                    System.out.println(nextMessage.author);
                     messageQueueArea.setText(cm.queueToString());
                     chatPanel.updateText();
                     try {
