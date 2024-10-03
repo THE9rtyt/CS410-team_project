@@ -49,55 +49,6 @@ public class Dashboard extends JPanel {
         // Add askUser panel at the top
         add(askUser, BorderLayout.NORTH);
 
-        // Create dashboardPanel but keep it hidden initially
-        dashboardPanel = new JPanel(new BorderLayout(0, 0));
-        dashboardPanel.setVisible(false);
-        
-        JPanel buttonPanel = new JPanel();
-        JButton approveButton = new JButton("Approve");
-        JButton rejectButton = new JButton("Reject");
-        buttonPanel.add(approveButton);
-        buttonPanel.add(rejectButton);
-        dashboardPanel.add(buttonPanel, BorderLayout.WEST); // Add buttons to dashboard panel
-        
-
-        messageQueueArea = new JTextArea(5, 20);
-        messageQueueArea.setEditable(false);
-        dashboardPanel.add(new JScrollPane(messageQueueArea), BorderLayout.EAST);
-
-        // Add dashboard panel but keep it hidden
-        add(dashboardPanel, BorderLayout.CENTER);
-
-      
-        messageQueueArea.setText(cm.queueToString());
-
-        // Action listener for "Approve" and "Reject" buttons
-        approveButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-            	cm.setQueue(cs.getQueuedMessages());
-                Chat nextMessage = cm.popQueue();
-                if (nextMessage != null) {
-                    System.out.println(nextMessage.author);
-                    messageQueueArea.setText(cm.queueToString());
-                    chatPanel.updateText();
-                    try {
-						cs.sendMessage(nextMessage);
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-                }
-            }
-        });
-
-        rejectButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-            	cm.setQueue(cs.getQueuedMessages());
-                cm.popQueue();  
-                messageQueueArea.setText(cm.queueToString());  // Update queued messages textarea
-            }
-        });
- 
        //listeners to clicking mod or reg
         btnMod.addActionListener(new ActionListener() {
             @Override
@@ -142,7 +93,6 @@ public class Dashboard extends JPanel {
          buttonPanel.add(rejectButton);
          dashboardPanel.add(buttonPanel, BorderLayout.WEST); // Add buttons to dashboard panel
          
-
          messageQueueArea = new JTextArea(6,10);
          messageQueueArea.setEditable(false);
          dashboardPanel.add(new JScrollPane(messageQueueArea), BorderLayout.CENTER);

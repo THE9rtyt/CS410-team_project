@@ -11,7 +11,6 @@ import javax.swing.JScrollPane;
 import app.Chat;
 import app.ChatManager;
 import app.Dashboard;
-import app.User;
 import network.ChatClient;
 
 import java.awt.BorderLayout;

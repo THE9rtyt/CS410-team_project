@@ -12,13 +12,6 @@ public class ChatManager {
 	public ChatManager() {
 		chats = new ArrayList<>();
 		queue = new ArrayList<>();
-		
-		//test
-//		queue.add(new Chat("Hello everyone! How are you?", "Alice"));
-//		queue.add(new Chat("This is a test message.", "Bob"));
-//		queue.add(new Chat("Can anyone help me with my issue?", "Charlie"));
-//		queue.add(new Chat("Looking forward to our meeting tomorrow.", "David"));
-//		queue.add(new Chat("Does anyone know the schedule for today?", "Eve"));
 	}
 	
 	public void addChat (Chat chat) {
